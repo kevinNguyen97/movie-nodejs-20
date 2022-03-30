@@ -1,0 +1,11 @@
+node_modules
+node_modules
+
+
+docker-compose.dev.yml
+postgress_data/
+redis_data/
+logs
+build.staging.sh
+
+.env
