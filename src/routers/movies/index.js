@@ -1,7 +1,12 @@
 "use strict";
 const express = require("express");
 const { Movie } = require("../../../models");
-const { getAllMovies, createMovie } = require("../../services/movies");
+const {
+  getAllMovies,
+  createMovie,
+  checkExistMovieById,
+  deleteMovieById,
+} = require("../../services/movies");
 
 const movieRouter = express.Router();
 
@@ -32,6 +37,23 @@ movieRouter.post("/", async (req, res) => {
     res.status(500).send("can not create movie");
   }
   res.status(201).send(movie);
+});
+
+movieRouter.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const isExistedMovie = await checkExistMovieById(id);
+
+  if (!isExistedMovie) {
+    return res.status(404).send(`movie id ${id} is not exist on db`);
+  }
+
+  const item = await deleteMovieById(id);
+
+  if (!item) {
+    return res.status(500).send(`can not delete movie id ${id}`);
+  }
+  res.status(200).send(`movie id ${id} deleted`);
 });
 
 module.exports = movieRouter;

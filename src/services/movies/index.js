@@ -22,7 +22,39 @@ const createMovie = async (movie) => {
   }
 };
 
+const checkExistMovieById = async (id) => {
+  try {
+    const movie = await Movie.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!movie) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+const deleteMovieById = async (id) => {
+  try {
+    const movie = await Movie.destroy({
+      where: {
+        id,
+      },
+    });
+    return movie;
+  } catch (error) {
+    console.log({ error });
+    return null;
+  }
+};
+
 module.exports = {
   getAllMovies,
-  createMovie
+  createMovie,
+  checkExistMovieById,
+  deleteMovieById
 };
