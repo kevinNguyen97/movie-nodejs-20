@@ -65,10 +65,25 @@ const deleteMovieById = async (id) => {
   }
 };
 
+const updateMovieById = async (id, data) => {
+  try {
+    const movie = await Movie.update(data, {
+      where: {
+        id,
+      },
+    });
+    return movie;
+  } catch (error) {
+    console.log({ error });
+    return null;
+  }
+};
+
 module.exports = {
   getAllMovies,
   createMovie,
   checkExistMovieById,
   deleteMovieById,
   getMovieById,
+  updateMovieById,
 };

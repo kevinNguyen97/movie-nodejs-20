@@ -7,6 +7,7 @@ const {
   checkExistMovieById,
   deleteMovieById,
   getMovieById,
+  updateMovieById,
 } = require("../../services/movies");
 
 const movieRouter = express.Router();
@@ -67,6 +68,33 @@ movieRouter.get("/:id", async (req, res) => {
   }
 
   res.status(200).send(movie);
+});
+
+movieRouter.put("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const { name, trailer, poster, description, startTime, evaluate } = req.body;
+
+  if (!name || !name.trim()) {
+    res.status(400).send("name is required");
+  }
+
+  const isExistMovie = await checkExistMovieById(id);
+
+  if (!isExistMovie) {
+    return res.status(404).send(`movie id ${id} is not exist on db`);
+  }
+
+  await updateMovieById(id, {
+    name,
+    trailer,
+    poster,
+    description,
+    startTime,
+    evaluate,
+  });
+
+  res.status(200).send(`updated`);
 });
 
 module.exports = movieRouter;
