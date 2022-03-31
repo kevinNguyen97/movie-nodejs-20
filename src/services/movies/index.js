@@ -38,6 +38,19 @@ const checkExistMovieById = async (id) => {
   }
 };
 
+const getMovieById = async (id) => {
+  try {
+    const movie = await Movie.findOne({
+      where: {
+        id,
+      },
+    });
+    return movie;
+  } catch (error) {
+    return null;
+  }
+};
+
 const deleteMovieById = async (id) => {
   try {
     const movie = await Movie.destroy({
@@ -56,5 +69,6 @@ module.exports = {
   getAllMovies,
   createMovie,
   checkExistMovieById,
-  deleteMovieById
+  deleteMovieById,
+  getMovieById,
 };

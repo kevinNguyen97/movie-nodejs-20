@@ -6,6 +6,7 @@ const {
   createMovie,
   checkExistMovieById,
   deleteMovieById,
+  getMovieById,
 } = require("../../services/movies");
 
 const movieRouter = express.Router();
@@ -54,6 +55,18 @@ movieRouter.delete("/:id", async (req, res) => {
     return res.status(500).send(`can not delete movie id ${id}`);
   }
   res.status(200).send(`movie id ${id} deleted`);
+});
+
+movieRouter.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const movie = await getMovieById(id);
+
+  if (!movie) {
+    return res.status(404).send(`movie id ${id} is not exist on db`);
+  }
+
+  res.status(200).send(movie);
 });
 
 module.exports = movieRouter;
