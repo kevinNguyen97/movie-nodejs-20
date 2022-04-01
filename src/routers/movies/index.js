@@ -84,17 +84,17 @@ movieRouter.put("/:id", async (req, res) => {
   if (!isExistMovie) {
     return res.status(404).send(`movie id ${id} is not exist on db`);
   }
-
-  await updateMovieById(id, {
+  const data = {
     name,
     trailer,
     poster,
     description,
     startTime,
     evaluate,
-  });
+  };
+  await updateMovieById(id, data);
 
-  res.status(200).send(`updated`);
+  res.status(200).send(data);
 });
 
 module.exports = movieRouter;
