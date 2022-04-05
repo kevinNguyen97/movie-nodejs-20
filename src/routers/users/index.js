@@ -1,6 +1,6 @@
 "use strict";
 const express = require("express");
-const { scriptPassword } = require("../../services/auth");
+const { scriptPassword, comparePassword } = require("../../services/auth");
 const { createUser, getUserByEmail } = require("../../services/users");
 
 const userRouter = express.Router();
@@ -28,18 +28,25 @@ userRouter.post("/sign-up", async (req, res) => {
   res.status(201).send(data);
 });
 
-userRouter.post("sign-in", async (req, res) => {
+userRouter.post("/sign-in", async (req, res) => {
   const { email, password } = req.body;
 
   // check valid data input
 
-  //
-
   const user = await getUserByEmail(email);
 
+  // check email is exist
   if (!user) {
     return res.status(400).send(`email: ${email} is not exist`);
   }
+
+  const isSuccess = comparePassword(password, user.password);
+
+  if (!isSuccess) {
+    return res.status(400).send(`password is not match`);
+  }
+
+  return res.status(200).send(user);
 });
 
 module.exports = userRouter;

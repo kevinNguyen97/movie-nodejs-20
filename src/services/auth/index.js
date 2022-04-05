@@ -7,6 +7,12 @@ const scriptPassword = (password) => {
   return hashed;
 };
 
+const comparePassword = (password, passwordHashed) => {
+  const isMatch = bcrypt.compareSync(password, passwordHashed);
+  return isMatch;
+};
+
 module.exports = {
-    scriptPassword
-}
+  scriptPassword,
+  comparePassword,
+};
