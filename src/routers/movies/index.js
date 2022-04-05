@@ -1,6 +1,8 @@
-"use strict";
-const express = require("express");
-const { Movie } = require("../../../models");
+'use strict';
+const express = require('express');
+const { Movie } = require('../../../models');
+const { authenticate, checkRole } = require('../../middlewares/auth');
+const { decodeToken } = require('../../services/auth');
 const {
   getAllMovies,
   createMovie,
@@ -8,23 +10,23 @@ const {
   deleteMovieById,
   getMovieById,
   updateMovieById,
-} = require("../../services/movies");
+} = require('../../services/movies');
 
 const movieRouter = express.Router();
 
-movieRouter.get("/", async (req, res) => {
+movieRouter.get('/', async (req, res) => {
   const movies = await getAllMovies();
   if (!movies) {
-    res.status(500).send("can not get movie list");
+    res.status(500).send('can not get movie list');
   }
   res.status(200).send(movies);
 });
 
-movieRouter.post("/", async (req, res) => {
+movieRouter.post('/', async (req, res) => {
   const { name, trailer, poster, description, startTime, evaluate } = req.body;
 
   if (!name || !name.trim()) {
-    res.status(400).send("name is required");
+    res.status(400).send('name is required');
   }
 
   const movie = await createMovie({
@@ -36,12 +38,12 @@ movieRouter.post("/", async (req, res) => {
     evaluate,
   });
   if (!movie) {
-    res.status(500).send("can not create movie");
+    res.status(500).send('can not create movie');
   }
   res.status(201).send(movie);
 });
 
-movieRouter.delete("/:id", async (req, res) => {
+movieRouter.delete('/:id', [authenticate, checkRole('ADMIN')], async (req, res) => {
   const { id } = req.params;
 
   const isExistedMovie = await checkExistMovieById(id);
@@ -58,7 +60,7 @@ movieRouter.delete("/:id", async (req, res) => {
   res.status(200).send(`movie id ${id} deleted`);
 });
 
-movieRouter.get("/:id", async (req, res) => {
+movieRouter.get('/:id', async (req, res) => {
   const { id } = req.params;
 
   const movie = await getMovieById(id);
@@ -70,13 +72,13 @@ movieRouter.get("/:id", async (req, res) => {
   res.status(200).send(movie);
 });
 
-movieRouter.put("/:id", async (req, res) => {
+movieRouter.put('/:id', async (req, res) => {
   const { id } = req.params;
 
   const { name, trailer, poster, description, startTime, evaluate } = req.body;
 
   if (!name || !name.trim()) {
-    res.status(400).send("name is required");
+    res.status(400).send('name is required');
   }
 
   const isExistMovie = await checkExistMovieById(id);

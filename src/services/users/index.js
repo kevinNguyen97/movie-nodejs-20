@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-const { User } = require("../../../models");
+const { User } = require('../../../models');
 
 const createUser = async (data) => {
   try {
@@ -25,7 +25,22 @@ const getUserByEmail = async (email) => {
   }
 };
 
+const getUserById = async (id) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        id,
+      },
+    });
+    return user;
+  } catch (error) {
+    console.log({ error });
+    return null;
+  }
+};
+
 module.exports = {
   createUser,
   getUserByEmail,
+  getUserById,
 };

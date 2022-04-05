@@ -18,6 +18,7 @@ userRouter.post('/sign-up', async (req, res) => {
     email,
     password: passwordHashed,
     phoneNumber,
+    role: 'USER',
   });
 
   if (!data) {
