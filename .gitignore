@@ -7,5 +7,6 @@ postgress_data/
 redis_data/
 logs
 build.staging.sh
+public
 
 .env

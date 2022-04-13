@@ -1,6 +1,7 @@
 'use strict';
 
-const { User } = require('../../../models');
+const { Op } = require('sequelize');
+const { User, Avatar } = require('../../../models');
 
 const createUser = async (data) => {
   try {
@@ -18,6 +19,7 @@ const getUserByEmail = async (email) => {
         email,
       },
     });
+    console.log({user})
     return user;
   } catch (error) {
     console.log({ error });
@@ -39,8 +41,35 @@ const getUserById = async (id) => {
   }
 };
 
+const storageAvatar = async (userId, url) => {
+  try {
+    // const avatar = await Avatar.create({
+    //   url,
+    //   userId,
+    //   isActive: true,
+    // });
+
+    // await Avatar.update(
+    //   { isActive: false },
+    //   {
+    //     where: {
+    //       userId,
+    //       id: {
+    //         [Op.not]: avatar.id,
+    //       },
+    //     },
+    //   }
+    // );
+
+    // return avatar;
+  } catch (error) {
+    return null;
+  }
+};
+
 module.exports = {
   createUser,
   getUserByEmail,
   getUserById,
+  // storageAvatar,
 };

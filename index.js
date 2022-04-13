@@ -2,12 +2,15 @@
 const express = require('express');
 const { sequelize } = require('./models');
 const { logger } = require('./src/middlewares/logger');
+const path = require('path');
 
 const rootRouter = require('./src/routers');
 
 const app = express();
 
 app.use(express.json());
+
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.use(logger);
 

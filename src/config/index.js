@@ -5,6 +5,7 @@ const config = {
   SYSTEM: {
     PORT: 3000,
     HOST: '',
+    DOMAIN: "http://localhost:3000"
   },
 };
 
