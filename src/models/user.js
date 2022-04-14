@@ -8,10 +8,16 @@ module.exports = (sequelize, DataTypes) => {
       delete attributes.password;
       return attributes;
     }
-    static associate({ Avatar }) {
+    static associate({ Avatar, Movie, Ticket }) {
       this.hasMany(Avatar, {
         foreignKey: 'userId',
+        as: 'avatars',
       });
+      this.hasOne(Avatar, {
+        foreignKey: 'userId',
+        as: 'avatar',
+      });
+      this.belongsToMany(Movie, { through: Ticket, as: 'movies' });
     }
   }
   User.init(

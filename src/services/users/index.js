@@ -1,7 +1,7 @@
 'use strict';
 
 const { Op } = require('sequelize');
-const { User, Avatar } = require('../../../models');
+const { User, Avatar, Movie, Ticket } = require('../../models');
 
 const createUser = async (data) => {
   try {
@@ -18,8 +18,20 @@ const getUserByEmail = async (email) => {
       where: {
         email,
       },
+      include: [
+        {
+          model: Avatar,
+          as: 'avatar',
+          where: {
+            isActive: true,
+          },
+        },
+        {
+          model: Avatar,
+          as: 'avatars',
+        },
+      ],
     });
-    console.log({user})
     return user;
   } catch (error) {
     console.log({ error });
@@ -43,25 +55,59 @@ const getUserById = async (id) => {
 
 const storageAvatar = async (userId, url) => {
   try {
-    // const avatar = await Avatar.create({
-    //   url,
-    //   userId,
-    //   isActive: true,
-    // });
+    const avatar = await Avatar.create({
+      url,
+      userId,
+      isActive: true,
+    });
 
-    // await Avatar.update(
-    //   { isActive: false },
-    //   {
-    //     where: {
-    //       userId,
-    //       id: {
-    //         [Op.not]: avatar.id,
-    //       },
-    //     },
-    //   }
-    // );
+    await Avatar.update(
+      { isActive: false },
+      {
+        where: {
+          userId,
+          id: {
+            [Op.not]: avatar.id,
+          },
+        },
+      }
+    );
 
-    // return avatar;
+    return avatar;
+  } catch (error) {
+    return null;
+  }
+};
+
+const getMovieHistoryByUser = async (userId) => {
+  try {
+    const data = await User.findOne({
+      where: {
+        id: userId,
+      },
+      include: [
+        {
+          model: Movie,
+          as: 'movies',
+          where: {
+            [Op.not]: 1,
+          },
+        },
+      ],
+    });
+
+    return data;
+  } catch (error) {
+    return null;
+  }
+};
+
+const createTicket = async (userId, movieId) => {
+  try {
+    Ticket.create({
+      userId,
+      movieId,
+    });
   } catch (error) {
     return null;
   }
@@ -71,5 +117,6 @@ module.exports = {
   createUser,
   getUserByEmail,
   getUserById,
-  // storageAvatar,
+  storageAvatar,
+  getMovieHistoryByUser,
 };

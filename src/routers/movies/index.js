@@ -1,6 +1,6 @@
 'use strict';
 const express = require('express');
-const { Movie } = require('../../../models');
+const { Movie } = require('../../models');
 const { authenticate, checkRole } = require('../../middlewares/auth');
 const { decodeToken } = require('../../services/auth');
 const {

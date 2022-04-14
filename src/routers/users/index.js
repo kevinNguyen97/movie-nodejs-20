@@ -4,7 +4,7 @@ const { SYSTEM } = require('../../config');
 const { authenticate } = require('../../middlewares/auth');
 const { uploadAvatar } = require('../../middlewares/upload');
 const { scriptPassword, comparePassword, genToken } = require('../../services/auth');
-const { createUser, getUserByEmail } = require('../../services/users');
+const { createUser, getUserByEmail, storageAvatar, getMovieHistoryByUser } = require('../../services/users');
 
 const userRouter = express.Router();
 
@@ -61,7 +61,30 @@ userRouter.post('/avatar', [authenticate, uploadAvatar()], async (req, res) => {
 
   const url = `${SYSTEM.DOMAIN}/${file.path}`;
 
-  res.status(200).send('ok');
+  const avatar = await storageAvatar(user.id, url);
+
+  res.status(200).send(avatar);
+});
+
+userRouter.get('/history', [authenticate], async (req, res) => {
+  const user = req.user;
+
+  const data = await user.getMovies();
+
+  if (!user) {
+    return res.status(500).send('can not get data');
+  }
+
+  res.status(200).send(data);
+});
+
+userRouter.post('/ticket/:movieId', [authenticate], async (req, res) => {
+  const { movieId } = req.params;
+
+  const user = req.user;
+
+  
+
 });
 
 module.exports = userRouter;

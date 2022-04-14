@@ -1,6 +1,6 @@
 'use strict';
 const express = require('express');
-const { sequelize } = require('./models');
+const { sequelize } = require('./src/models');
 const { logger } = require('./src/middlewares/logger');
 const path = require('path');
 
