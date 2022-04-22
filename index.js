@@ -51,13 +51,38 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 
+const arrUser = [];
+
 io.on('connection', (socket) => {
+  arrUser.push(socket.id);
   console.log('new connection', socket.id);
+  socket.broadcast.emit('refresh-user', arrUser, socket.id);
+
+  // get and check token
+  // socket.handshake.auth
+
+  socket.on('send-message', (message, callback) => {
+    if (!message || !message.trim()) {
+      return callback('empty message');
+    }
+    // emit to all user
+    // io.emit('receive-message', message);
+
+    // emit to all user except sender
+    socket.broadcast.emit('receive-message', message);
+
+    // callback();
+  });
 
   socket.on('disconnect', () => {
     console.log('disconnect ', socket.id);
+
+    const index = arrUser.indexOf(socket.id);
+    if (index > -1) {
+      arrUser.splice(index, 1);
+    }
+    io.emit('refresh-user', arrUser);
   });
 });
-
 
 // [socket1, socket2, socket3]
